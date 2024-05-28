@@ -1,46 +1,49 @@
-from sklearn.cluster import KMeans
-from sklearn import preprocessing
-from sklearn.mixture import GaussianMixture
+import streamlit as st
 from sklearn.datasets import load_iris
-import sklearn.metrics as sm
-import pandas as pd
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
 import numpy as np
-import matplotlib.pyplot as plt
+import pandas as pd
 
-dataset=load_iris()
-# print(dataset)
+def main():
+    st.title("K-Nearest Neighbors Classifier on Iris Dataset")
+    
+    # Load Iris dataset
+    dataset = load_iris()
+    X_train, X_test, y_train, y_test = train_test_split(dataset["data"], dataset["target"], random_state=0)
+    
+    # Train KNN model
+    kn = KNeighborsClassifier(n_neighbors=1)
+    kn.fit(X_train, y_train)
+    
+    # Display the dataset
+    st.subheader("Iris Dataset")
+    iris_data = pd.DataFrame(dataset.data, columns=dataset.feature_names)
+    iris_data['target'] = dataset.target
+    iris_data['target_name'] = iris_data['target'].apply(lambda x: dataset.target_names[x])
+    st.write(iris_data)
+    
+    # Predict and display results
+    st.subheader("Predictions on Test Data")
+    results = []
+    for i in range(len(X_test)):
+        x = X_test[i]
+        x_new = np.array([x])
+        prediction = kn.predict(x_new)
+        results.append({
+            "Target": y_test[i],
+            "Target Name": dataset["target_names"][y_test[i]],
+            "Predicted": prediction[0],
+            "Predicted Name": dataset["target_names"][prediction[0]]
+        })
+    
+    results_df = pd.DataFrame(results)
+    st.write(results_df)
+    
+    # Display model accuracy
+    st.subheader("Model Accuracy")
+    accuracy = kn.score(X_test, y_test)
+    st.write(f"Accuracy: {accuracy:.2f}")
 
-X=pd.DataFrame(dataset.data)
-X.columns=['Sepal_Length','Sepal_Width','Petal_Length','Petal_Width']
-y=pd.DataFrame(dataset.target)
-y.columns=['Targets']
-# print(X)
-
-plt.figure(figsize=(14,7))
-colormap=np.array(['red','lime','black'])
-
-# REAL PLOT
-plt.subplot(1,3,1)
-plt.scatter(X.Petal_Length,X.Petal_Width,c=colormap[y.Targets],s=40)
-plt.title('Real')
-
-# K-PLOT
-plt.subplot(1,3,2)
-model=KMeans(n_clusters=3)
-model.fit(X)
-predY=np.choose(model.labels_,[0,1,2]).astype(np.int64)
-plt.scatter(X.Petal_Length,X.Petal_Width,c=colormap[predY],s=40)
-plt.title('KMeans')
-
-# GMM PLOT
-scaler=preprocessing.StandardScaler()
-scaler.fit(X)
-xsa=scaler.transform(X)
-xs=pd.DataFrame(xsa,columns=X.columns)
-gmm=GaussianMixture(n_components=3)
-gmm.fit(xs)
-
-y_cluster_gmm=gmm.predict(xs)
-plt.subplot(1,3,3)
-plt.scatter(X.Petal_Length,X.Petal_Width,c=colormap[y_cluster_gmm],s=40)
-plt.title('GMM Classification')
+if __name__ == "__main__":
+    main()
