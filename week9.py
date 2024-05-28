@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
 from sklearn.datasets import make_regression
@@ -57,16 +56,9 @@ def main():
     y_pred = np.array([locally_weighted_regression(x, X, Y, tau) for x in x_pred])
     
     # Plotting the results
-    fig, ax = plt.subplots(figsize=(10, 6))
-    ax.scatter(X, Y, color='blue', label='Data Points')
-    ax.plot(x_pred, y_pred, color='red', label='LWR Curve')
-    ax.set_xlabel('Feature')
-    ax.set_ylabel('Target')
-    ax.legend()
-    ax.set_title('Locally Weighted Regression')
-    
-    # Display plot in Streamlit
-    st.pyplot(fig)
+    st.subheader("Locally Weighted Regression Plot")
+    chart_data = pd.DataFrame({"x_pred": x_pred, "y_pred": y_pred})
+    st.line_chart(chart_data.set_index("x_pred"))
 
 if __name__ == "__main__":
     main()
