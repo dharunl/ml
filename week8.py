@@ -60,7 +60,7 @@ def main():
     }
     </style>
     <div class="footer">
-        &copy; 2024 Your Company Name. All rights reserved.
+        &copy; BYTES BRIGADE WEEK 8 (DHARUNKUMAR,LATCHIYA,KANMANI)
     </div>
 """, unsafe_allow_html=True)
 
