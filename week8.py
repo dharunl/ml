@@ -45,5 +45,24 @@ def main():
     accuracy = kn.score(X_test, y_test)
     st.write(f"Accuracy: {accuracy:.2f}")
 
+    st.markdown("""
+    <style>
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: white;
+        color: black;
+        text-align: center;
+        padding: 10px;
+        font-size: 12px;
+    }
+    </style>
+    <div class="footer">
+        &copy; 2024 Your Company Name. All rights reserved.
+    </div>
+""", unsafe_allow_html=True)
+
 if __name__ == "__main__":
     main()
